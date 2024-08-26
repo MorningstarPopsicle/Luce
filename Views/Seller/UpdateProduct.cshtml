@@ -1,0 +1,26 @@
+@using Luce.ViewModels.ProductViewModel
+@model Luce.ViewModels.ProductViewModel.UpdateProductViewModel
+
+
+
+
+
+
+<form asp-route-productId="@Model.Id" asp-controller="Seller" asp-action="UpdateProduct" method="post">
+        <div class="registration-container">
+            <input  for="ProductName" name="ProductName"  type="text" value="@Model.ProductName" placeholder="Product Name">
+            <input for="Price" name="Price"  type="number" value="@Model.Price" placeholder="Price">
+            </div>
+            <input value="@Model.Quantity" for="Quantity" name="Quantity"  type="number" placeholder="Quantity" >
+            <input for="ImageUrl" name="ImageUrl"  type="text" value="@Model.ImageUrl" placeholder="Image Url">
+            </div>
+
+        <div class="button-container Register">
+            <button>Submit</button>
+        </div>
+        
+    </form>
+
+    
+    
+   

@@ -1,0 +1,25 @@
+@using Luce.ViewModels.ProductViewModel
+@model Luce.ViewModels.ProductViewModel.CreateProductViewModel
+
+@{
+    ViewData["Title"] = "Create Product Page";
+}
+
+
+
+<form  asp-action="CreateProduct" method="post">
+        <div class="registration-container">
+            <input  for="ProductName" name="ProductName"  type="text" placeholder="Product Name">
+            <input for="Price" name="Price"  type="number" placeholder="Price">
+            <input  for="InitialQuantity" name="InitialQuantity"  type="number" placeholder="Quantity">        
+            <div >
+            </div>
+            <input  for="ImageUrl" name="ImageUrl"  type="text" placeholder="Image URL">
+            </div>
+
+        <div >
+            <button>Submit</button>
+        </div>
+    </form>
+   
+    

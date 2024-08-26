@@ -1,0 +1,24 @@
+@using Luce.ViewModels.DispatchViewModel
+@model Luce.ViewModels.DispatchViewModel.CreateDispatchViewModel
+
+@{
+    ViewData["Title"] = "Registration Page";
+}
+
+
+
+<form  asp-action="RegisterDispatch" method="post">
+        <div class="registration-container">
+            <input  for="FirstName" name="FirstName"  type="text" placeholder="First Name">
+            <input for="LastName" name="LastName"  type="text" placeholder="Last Name">
+            <input  for="Email" name="Email"  type="email" placeholder="Email">        
+            <div  >
+            </div>
+            </div>
+
+        <div >
+            <button>Submit</button>
+        </div>
+    </form>
+   
+    

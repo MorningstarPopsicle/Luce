@@ -1,0 +1,20 @@
+@using Luce.ViewModels.DispatchViewModel
+@model Luce.ViewModels.DispatchViewModel.UpdateDispatchViewModel
+
+
+
+
+<form class="all-container"  asp-action="Update" method="post">
+        <div class="registration-container">
+            <input  for="FirstName" name="FirstName"  type="text" value="@Model.FirstName" placeholder="First Name">
+            <input for="LastName" name="LastName"  type="text" value="@Model.LastName" placeholder="Last Name">
+            </div>
+            <input value="@Model.PhoneNumber" for="PhoneNumber" name="PhoneNumber"  type="text" placeholder="Phone Number" maxlength="11">
+            </div>
+
+        <div class="button-container Register">
+            <button>Submit</button>
+        </div>
+    </form>
+    
+   

@@ -1,0 +1,75 @@
+@using Luce.ViewModels.SellerViewModel
+@model Luce.ViewModels.SellerViewModel.ViewProfileVM
+
+@{
+    Layout = "";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seller Page</title>
+    <link rel="stylesheet" href="~/lib/bootstarp/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="~/css/site.css">
+</head>
+
+
+<div class="info">
+    <div>
+        <label>
+            NAME: @Model.LastName @Model.FirstName
+        </label>
+    </div>
+
+    <div>
+        <label>
+            EMAIL: @Model.Email
+        </label>
+    </div>
+
+
+    <div>
+        <label>
+            PHONE NUMBER: @Model.PhoneNumber
+        </label>
+    </div>
+
+     <div>
+        <label>
+            ADDRESS: @Model.Address.HouseNumber, @Model.Address.StreetName Street, @Model.Address.LGA, @Model.Address.Town, @Model.Address.State State, @Model.Address.Country.
+        </label>
+    </div>
+
+    <div>
+        <label>
+            STORE NAME: @Model.StoreName
+        </label>
+    </div>
+
+    <div>
+        <label>
+            ACCOUNT NUMBER: @Model.AccountNumber
+        </label>
+    </div>
+
+    <div>
+        <label>
+            LOGO: @Model.Logo
+        </label>
+    </div>
+
+
+    
+</div>
+
+<div class="btn-group">
+    <a class="update btn-warning btn" asp-controller="Seller" asp-action="Update" asp-route-id=@Model.Id>Edit</a>
+</div>
+
+<footer class="footer-container">
+            &copy;  2022 GetItAll || All Rights Reserved
+     </footer>

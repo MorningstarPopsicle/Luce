@@ -1,0 +1,23 @@
+@using Luce.ViewModels.DispatchViewModel
+@model Luce.ViewModels.DispatchViewModel.ContinueRegViewModel
+
+@{
+    ViewData["Title"] = "Registration Page";
+}
+
+
+
+<form  asp-action="ContinueRegistration" method="post">
+        <div class="registration-container">
+            <input  for="Password" name="Password"  type="password" placeholder="Password" >
+            <div  >
+            </div>
+            <input  for="PhoneNumber" name="PhoneNumber"  type="text" placeholder="Phone Number" maxlength="11">
+            </div>
+
+        <div >
+            <button>Submit</button>
+        </div>
+    </form>
+   
+    

@@ -1,0 +1,35 @@
+@using Luce.ViewModels.SellerViewModel
+@model Luce.ViewModels.SellerViewModel.CreateSellerViewModel
+
+@{
+    ViewData["Title"] = "Registration Page";
+}
+
+
+
+<form  asp-action="Create" method="post">
+        <div class="registration-container">
+            <input  for="FirstName" name="FirstName"  type="text" placeholder="First Name">
+            <input for="LastName" name="LastName"  type="text" placeholder="Last Name">
+            <input  for="Email" name="Email"  type="email" placeholder="Email">        
+            <input  for="Password" name="Password"  type="password" placeholder="Password" >
+            <div  >
+            </div>
+            <input  for="PhoneNumber" name="PhoneNumber"  type="text" placeholder="Phone Number" maxlength="11">
+            <input for="AccountNumber" name="AccountNumber"  type="text" placeholder="Account Number">
+           <input  for="Address.HouseNumber" name="Address.HouseNumber"  type="text" placeholder="House Number">
+            <input for="Address.StreetName" name="Address.StreetName"  type="text" placeholder="StreetName">
+            <input  for="Address.LGA" name="Address.LGA"  type="text" placeholder="LGA">        
+            <input for="Address.Town" name="Address.Town"  type="text" placeholder="Town">
+            <input  for="Address.State" name="Address.State"  type="text" placeholder="State">        
+            <input  for="Address.Country" name="Address.Country"  type="text" placeholder="Country">       
+            <input for="Logo" name="Logo"  type="text" placeholder="Logo">
+            <input  for="StoreName" name="StoreName"  type="text" placeholder="StoreName">        
+             </div>
+
+        <div >
+            <button>Submit</button>
+        </div>
+    </form>
+   
+    

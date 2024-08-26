@@ -1,0 +1,39 @@
+@using Luce.ViewModels.CustomerViewModel
+@model Luce.ViewModels.CustomerViewModel.ProductCartItemViewModel
+
+@{
+    ViewData["Title"] = "Add to Cart Page";
+}
+
+@* <div>
+    <h3>Product Details:</h3>
+    <p><strong>Name:</strong> @Model.Product.Data.ProductName</p>
+    <p><strong>Price:</strong> $@Model.Product.Data.Price</p>
+    
+</div> *@
+
+<div>
+    <h3>Add to Cart:</h3>
+    <form method="post" action="/Customer/CreateCartItem"> 
+        <input type="hidden" name="ProductId" value="@Model.Product.Id">
+        
+        @if (Model.Product != null)
+        {
+            <input for="ProductName" name="ProductName" type="text" value="@Model.Product.ProductName" readonly>
+            <input for="Price" name="Price" type="number" value="@Model.Product.Price" readonly>
+        }
+        else
+        {
+            <p>Product information not available.</p>
+        }
+          
+        <input type="number" for="quantity" name="quantity" placeholder="Quantity" id="quantity" value="1" required>
+        <input type="submit" value="Add to Cart">
+    </form>
+</div>
+
+
+       
+ 
+   
+    

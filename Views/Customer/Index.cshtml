@@ -1,0 +1,119 @@
+@using Luce.ViewModels.ProductViewModel
+@model GetAllProductsViewModel
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Page</title>
+    
+</head>
+
+<body>
+    <div >
+
+        <header >
+            <div >
+                <img src="~/images/GetItAllLogo-removebg-preview.png" alt="">
+            </div>
+
+            <nav >
+                <ul>
+                    <li><a asp-controller="Customer" asp-action = "Create">register</a></li>
+                    @* <li><a asp-controller="Customer" asp-action = "Login">login</a></li>
+                    <li><a asp-controller="Staff" asp-action = "Login">staff login</a></li>
+                    <li><a asp-controller="Customer" asp-action = "ViewProfile">Profile</a></li>
+                    <li><a asp-controller="Cart" asp-action = "Index">🛒View Cart</a></li> *@
+                </ul>
+            </nav>
+
+            <div class="button-container">
+                <button>contact us</button>
+            </div>
+        </header>
+        <div class="title-container">
+            <div class="title-name">
+                <h1>GetItAll Mall</h1>
+                <h6 id="title-motto">spend less, gain more ...</h6>
+            </div>
+        </div>
+        <div class="search-bar">
+            <input type="search" placeholder="🔎Search for items here:">
+            <button>Search</button>
+        </div>
+        <div class="body-container">
+            <div class="nav-bar-container">
+                <ul>
+                    <li>Supermarket</li>
+                    <li>Health & Beauty</li>
+                    <li>Home & Office</li>
+                    <li>Phones & Tablets</li>
+                    <li>Computing</li>
+                    <li>Electronics</li>
+                    <li>Fashion</li>
+                    <li>Baby Products</li>
+                    <li>Gaming</li>
+                    <li>Sporting Goods</li>
+                    <li>Automobile</li>
+                    <li>Other categories</li>
+                </ul>
+            </div>
+            <div class="middle-image-container" style="background-image: url(~/images/good3.webp);">
+                <img src="~/images/good3.webp" alt="">
+            </div>
+
+            <div class="right-images-container">
+                <img src="~/images/good1.webp" alt="">
+                <img src="~/images/good2.webp" alt="">
+            </div>
+        </div>
+
+        <div class="top-selling-items-container">
+            <div class="top-selling-item-heading">
+                <span>Top selling items</span>
+            </div>
+            <div class="top-selling-items">
+               @foreach (var product in @Model.Products)
+                    {
+                        @if(product.Quantity > 0)
+                            {
+            
+                
+                <div class="top-selling-item-details">
+                        <div class="top-selling-items-images">
+                            @* <img src="~/Images/@product.Data.ImageURL"  alt="product image"> *@
+                        </div>
+                        <div class="top-selling-item-price">
+                            <span class="item-name">@product.ProductName</span>
+                            <span class="prices">&#8358; @product.Price</span>
+                        </div>
+                        
+                        <div class="btn-group">
+                         <a id="@product.Id" class="update btn-warning btn" asp-controller="Customer" asp-action="ViewProduct" asp-route-productId=@product.Id>View Product</a>
+                        
+                            
+                       </div>
+                       
+                </div>    
+               
+    }
+    
+}
+</div>
+
+<div><a  class="btn-danger btn" asp-controller="Customer"  asp-action="ViewCart" >View Cart</a></div>    
+
+      
+            
+
+        <footer class="footer-container">
+            &copy;  2022 GetItAll || All Rights Reserved
+        </footer>
+    </div>
+
+       
+       
+        
+</body>

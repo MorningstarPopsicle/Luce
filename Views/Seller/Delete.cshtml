@@ -1,0 +1,10 @@
+@* @using Zee.DTOs.ResponseModels
+@model DispatchResponseModel
+
+<div class="btn-group" >
+        
+        <span>Are you sure you want to delete?</span>
+        
+        <a  class="btn-danger btn" asp-controller="Seller" asp-route-email=@Model.Data.UserDto.Email asp-action="DeleteDispatch" >Delete</a> 
+        <a class="btn-danger btn" asp-controller="Seller"  asp-action="GetDispatches">Back</a>
+    </div> *@

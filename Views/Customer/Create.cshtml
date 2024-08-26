@@ -1,0 +1,26 @@
+@using Luce.ViewModels.AdminViewModel
+@model Luce.ViewModels.AdminViewModel.CreateAdminViewModel
+
+@{
+    ViewData["Title"] = "Registration Page";
+}
+
+
+
+<form  asp-action="Create" method="post">
+        <div class="registration-container">
+            <input  for="FirstName" name="FirstName"  type="text" placeholder="First Name">
+            <input for="LastName" name="LastName"  type="text" placeholder="Last Name">
+            <input  for="Email" name="Email"  type="email" placeholder="Email">        
+            <input  for="Password" name="Password"  type="password" placeholder="Password">
+            <div  >
+            </div>
+            <input  for="PhoneNumber" name="PhoneNumber"  type="text" placeholder="Phone Number" maxlength="11">
+            </div>
+
+        <div >
+            <button>Submit</button>
+        </div>
+    </form>
+   
+    

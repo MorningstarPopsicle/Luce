@@ -1,0 +1,28 @@
+@using Luce.ViewModels.SellerViewModel
+@model Luce.ViewModels.SellerViewModel.UpdateSellerViewModel
+
+<form class="all-container"  asp-action="Update" method="post">
+        <div class="registration-container">
+            <input  for="FirstName" name="FirstName"  type="text" value="@Model.FirstName" placeholder="First Name">
+            <input for="LastName" name="LastName"  type="text" value="@Model.LastName" placeholder="Last Name">
+            <input  for="Address.HouseNumber" name="Address.HouseNumber"  type="text" value="@Model.Address.HouseNumber" placeholder="House Number">
+            <input for="Address.StreetName" name="Address.StreetName"  type="text" value="@Model.Address.StreetName" placeholder="Street Name">
+           <input  for="Address.LGA" name="Address.LGA"  type="text" value="@Model.Address.LGA" placeholder="LGA">
+            <input for="Address.Town" name="Address.Town"  type="text" value="@Model.Address.Town" placeholder="Town">
+           <input  for="Address.State" name="Address.State"  type="text" value="@Model.Address.State" placeholder="State">
+            <input for="Address.Country" name="Address.Country"  type="text" value="@Model.Address.Country" placeholder="Country">
+           <input  for="AccountNumber" name="AccountNumber"  type="text" value="@Model.AccountNumber" placeholder="Account Number">
+            <input for="StoreName" name="StoreName"  type="text" value="@Model.StoreName" placeholder="Store Name">
+           <input  for="Logo" name="Logo"  type="text" value="@Model.Logo" placeholder="Logo">
+            
+            </div>
+            <input value="@Model.PhoneNumber" for="PhoneNumber" name="PhoneNumber"  type="text" placeholder="Phone Number" maxlength="11">
+            </div>
+
+
+        <div class="button-container Register">
+            <button>Submit</button>
+        </div>
+    </form>
+    
+   
