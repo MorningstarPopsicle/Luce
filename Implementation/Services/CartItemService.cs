@@ -29,7 +29,6 @@ namespace Luce.Implementation.Service
                 OrderId = null,
                 Quantity = model.Quantity,
                 IsCheckedOut = false,
-                // TotalPrice = model.TotalPrice,
                 ProductId = productId,
                 CustomerId = customerId
             };
@@ -37,20 +36,29 @@ namespace Luce.Implementation.Service
             var result = await _cartItemRepository.CreateAsync(newCartItem);
             return new CartItemDto()
             {
-                Id = newCartItem.Id,
-                OrderId = newCartItem.OrderId,
-                Quantity = newCartItem.Quantity,
-                IsCheckedOut = newCartItem.IsCheckedOut,
-                // TotalPrice = newCartItem.TotalPrice,
-                // ProductId = newCartItem.ProductId,
+                Id = result.Id,
+                OrderId = result.OrderId,
+                Quantity = result.Quantity,
+                IsCheckedOut = result.IsCheckedOut,
                 ProductDto = new ProductDto()
                 {
-                    Id = newCartItem.Product.Id,
-                    ProductName = newCartItem.Product.ProductName,
-                    Price = newCartItem.Product.Price,
-                    ImageUrl = newCartItem.Product.ImageUrl
+                    Id = result.Product.Id,
+                    ProductName = result.Product.ProductName,
+                    Price = result.Product.Price,
+                    ImageUrl = result.Product.ImageUrl
                 },
-                CustomerId = newCartItem.CustomerId
+                CustomerDto = new CustomerDto()
+                {
+                    Id = result.Customer.Id,
+                    UserDto = new UserDto()
+                    {
+                        Id = result.Customer.User.Id,
+                        FirstName = result.Customer.User.FirstName,
+                        LastName = result.Customer.User.LastName,
+                        Email = result.Customer.User.Email,
+                        PhoneNumber = result.Customer.User.PhoneNumber,
+                    }
+                }
             };
 
         }
@@ -75,11 +83,18 @@ namespace Luce.Implementation.Service
                 },
                 Quantity = x.Quantity,
                 IsCheckedOut = x.IsCheckedOut,
-                // TotalPrice = x.TotalPrice,
                 Id = x.Id,
                 CustomerDto = new CustomerDto()
                 {
-                    Id = customerId
+                    Id = x.Customer.Id,
+                    UserDto = new UserDto
+                    {
+                        FirstName = x.Customer.User.FirstName,
+                        LastName = x.Customer.User.LastName,
+                        Email = x.Customer.User.Email,
+                        PhoneNumber = x.Customer.User.PhoneNumber,
+                        Role = x.Customer.User.Role,
+                    },
                 },
 
             }).ToList();
@@ -90,6 +105,10 @@ namespace Luce.Implementation.Service
         public async Task<CartItemDto> GetCartItemAsync(int customerId, int productId)
         {
             var cartItem = await _cartItemRepository.GetCartItemAsync(customerId, productId);
+            if(cartItem == null)
+            {
+                return null;
+            }
             return new CartItemDto
             {
                 OrderId = cartItem.OrderId.GetValueOrDefault(),
@@ -104,7 +123,6 @@ namespace Luce.Implementation.Service
                 },
                 Quantity = cartItem.Quantity,
                 IsCheckedOut = cartItem.IsCheckedOut,
-                // TotalPrice = cartItem.TotalPrice,
                 CustomerDto = new CustomerDto
                 {
                     UserDto = new UserDto
@@ -125,33 +143,36 @@ namespace Luce.Implementation.Service
         public async Task<CartItemDto> GetCartItemByCartItemIdAsync(int cartItemId)
         {
             var cartItem = await _cartItemRepository.GetAsync(cartItemId);
+            if(cartItem == null)
+            {
+                return null;
+            }
             return new CartItemDto
             {
-                    OrderId = cartItem.OrderId,
-                    Id = cartItem.Id,
-                    ProductDto = new ProductDto
+                Id = cartItem.Id,
+                OrderId = cartItem.OrderId.GetValueOrDefault(),
+                ProductDto = new ProductDto
+                {
+                    Id = cartItem.Product.Id,
+                    ProductName = cartItem.Product.ProductName,
+                    Price = cartItem.Product.Price,
+                    SellerId = cartItem.Product.SellerId,
+                    ImageUrl = cartItem.Product.ImageUrl
+                },
+                Quantity = cartItem.Quantity,
+                IsCheckedOut = cartItem.IsCheckedOut,
+                CustomerDto = new CustomerDto
+                {
+                    UserDto = new UserDto
                     {
-                        Id = cartItem.Product.Id,
-                        ProductName = cartItem.Product.ProductName,
-                        Price = cartItem.Product.Price,
-                        SellerId = cartItem.Product.SellerId,
-                        ImageUrl = cartItem.Product.ImageUrl
+                        FirstName = cartItem.Customer.User.FirstName,
+                        LastName = cartItem.Customer.User.LastName,
+                        Email = cartItem.Customer.User.Email,
+                        PhoneNumber = cartItem.Customer.User.PhoneNumber,
+                        Role = cartItem.Customer.User.Role,
                     },
-                    Quantity = cartItem.Quantity,
-                    IsCheckedOut = cartItem.IsCheckedOut,
-                    // TotalPrice = cartItem.TotalPrice,
-                    CustomerDto = new CustomerDto
-                    {
-                        UserDto = new UserDto
-                        {
-                            FirstName = cartItem.Customer.User.FirstName,
-                            LastName = cartItem.Customer.User.LastName,
-                            Email = cartItem.Customer.User.Email,
-                            PhoneNumber = cartItem.Customer.User.PhoneNumber,
-                            Role = cartItem.Customer.User.Role,
-                        },
-                        Id = cartItem.Customer.Id
-                    }
+                    Id = cartItem.Customer.Id
+                }
             };
 
         }

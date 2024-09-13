@@ -29,7 +29,7 @@
                         <td>@item.ProductDto.Price</td>
                         <td>@item.ProductDto.ImageUrl </td>
                         <td>
-                            <a class="update btn-warning btn" asp-controller="Customer" asp-action="Pay" asp-route-cartItemId="@item.Id">Pay</a>
+                            <a class="update btn-warning btn" asp-controller="Customer" asp-action="test" asp-route-cartItemId="@item.Id">Pay</a>
                             <a class="btn font-weight-bold" style="background-color:red; color:white" data-toggle="modal" data-target="@modalIdHash">DELETE</a>                                        
                             <div class="modal fade" id="@modalId" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
                                 <div class="modal-dialog modal-dialog-centered" role="document">

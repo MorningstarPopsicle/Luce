@@ -12,12 +12,12 @@ namespace Luce.Implementation.Repositories
 
        public async Task<Payment> GetPayment(int id)
         {
-            var payment = await _Context.Payments.Include(x => x.Customer).Include(x => x.Seller).SingleOrDefaultAsync(c => c.Id == id);
+            var payment = await _Context.Payments.Include(p => p.Order).SingleOrDefaultAsync(c => c.Id == id);
             return payment;}
 
         public async Task<List<Payment>> GetAllPayments()
         {
-            var payments =  await _Context.Payments.Include(p => p.Seller).Include(p => p.Customer).ToListAsync();
+            var payments =  await _Context.Payments.Include(p => p.Order).ToListAsync();
             return payments;
         }       
     }

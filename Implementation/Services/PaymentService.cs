@@ -16,24 +16,24 @@ namespace Luce.Implementation.Service
 
         }
 
-        public async Task<bool> MakePayment(PaymentDto model, int customerId, int sellerId)
-        {
-            var payment = await _paymentRepository.GetAsync(payment => payment.Id == model.Id);
-            if (payment != null)
-            {
-                return false;
-            }
+        // public async Task<bool> MakePayment(PaymentDto model, int customerId, int sellerId)
+        // {
+        //     var payment = await _paymentRepository.GetAsync(payment => payment.Id == model.Id);
+        //     if (payment != null)
+        //     {
+        //         return false;
+        //     }
 
-            var newPayment = new Payment()
-            {
-                Date = DateTime.Now,
-                Amount = model.Amount,
-                Status = PaymentStatus.Completed,
-                SenderId = customerId,
-                ReceiverId = sellerId, 
-            };
-            var addPayment = await _paymentRepository.CreateAsync(newPayment);
-            return true;
-        }
+        //     var newPayment = new Payment()
+        //     {
+        //         Date = DateTime.Now,
+        //         Amount = model.Amount,
+        //         Status = PaymentStatus.Completed,
+        //         SenderId = customerId,
+        //         ReceiverId = sellerId, 
+        //     };
+        //     var addPayment = await _paymentRepository.CreateAsync(newPayment);
+        //     return true;
+        // }
     }
 }

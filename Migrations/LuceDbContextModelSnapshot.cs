@@ -126,8 +126,6 @@ namespace Luce.Migrations
 
                     b.HasIndex("CustomerId");
 
-                    b.HasIndex("OrderId");
-
                     b.HasIndex("ProductId");
 
                     b.ToTable("CartItems");
@@ -191,11 +189,20 @@ namespace Luce.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
+                    b.Property<int>("CartItemId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("CartItemId1")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime(6)");
 
                     b.Property<int>("CustomerId")
                         .HasColumnType("int");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime(6)");
 
                     b.Property<DateTime>("DeletedAt")
                         .HasColumnType("datetime(6)");
@@ -211,6 +218,9 @@ namespace Luce.Migrations
 
                     b.Property<double>("Distance")
                         .HasColumnType("double");
+
+                    b.Property<int>("PaymentId")
+                        .HasColumnType("int");
 
                     b.Property<int>("RateValue")
                         .HasColumnType("int");
@@ -229,9 +239,14 @@ namespace Luce.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("CartItemId1");
+
                     b.HasIndex("CustomerId");
 
                     b.HasIndex("DeliveryAddressId");
+
+                    b.HasIndex("PaymentId")
+                        .IsUnique();
 
                     b.HasIndex("SellerId");
 
@@ -244,17 +259,11 @@ namespace Luce.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<int>("AdminId")
-                        .HasColumnType("int");
-
                     b.Property<double>("Amount")
                         .HasColumnType("double");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime(6)");
-
-                    b.Property<int?>("CustomerId")
-                        .HasColumnType("int");
 
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime(6)");
@@ -262,16 +271,7 @@ namespace Luce.Migrations
                     b.Property<DateTime>("DeletedAt")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<int>("OrderId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ReceiverId")
-                        .HasColumnType("int");
-
                     b.Property<int?>("SellerId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("SenderId")
                         .HasColumnType("int");
 
                     b.Property<int>("Status")
@@ -281,13 +281,6 @@ namespace Luce.Migrations
                         .HasColumnType("datetime(6)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("AdminId");
-
-                    b.HasIndex("CustomerId");
-
-                    b.HasIndex("OrderId")
-                        .IsUnique();
 
                     b.HasIndex("SellerId");
 
@@ -506,10 +499,6 @@ namespace Luce.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Luce.Order", null)
-                        .WithMany("CartItem")
-                        .HasForeignKey("OrderId");
-
                     b.HasOne("Luce.Product", "Product")
                         .WithMany()
                         .HasForeignKey("ProductId")
@@ -545,8 +534,12 @@ namespace Luce.Migrations
 
             modelBuilder.Entity("Luce.Order", b =>
                 {
+                    b.HasOne("Luce.CartItem", "CartItem")
+                        .WithMany()
+                        .HasForeignKey("CartItemId1");
+
                     b.HasOne("Luce.Customer", "Customer")
-                        .WithMany("Orders")
+                        .WithMany()
                         .HasForeignKey("CustomerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -555,46 +548,34 @@ namespace Luce.Migrations
                         .WithMany()
                         .HasForeignKey("DeliveryAddressId");
 
+                    b.HasOne("Luce.Payment", "Payment")
+                        .WithOne("Order")
+                        .HasForeignKey("Luce.Order", "PaymentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("Luce.Seller", "Seller")
                         .WithMany("Orders")
                         .HasForeignKey("SellerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.Navigation("CartItem");
+
                     b.Navigation("Customer");
 
                     b.Navigation("DeliveryAddress");
+
+                    b.Navigation("Payment");
 
                     b.Navigation("Seller");
                 });
 
             modelBuilder.Entity("Luce.Payment", b =>
                 {
-                    b.HasOne("Luce.Admin", "Admin")
-                        .WithMany("Payments")
-                        .HasForeignKey("AdminId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Luce.Customer", "Customer")
-                        .WithMany("Payments")
-                        .HasForeignKey("CustomerId");
-
-                    b.HasOne("Luce.Order", null)
-                        .WithOne("Payment")
-                        .HasForeignKey("Luce.Payment", "OrderId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Luce.Seller", "Seller")
+                    b.HasOne("Luce.Seller", null)
                         .WithMany("Payments")
                         .HasForeignKey("SellerId");
-
-                    b.Navigation("Admin");
-
-                    b.Navigation("Customer");
-
-                    b.Navigation("Seller");
                 });
 
             modelBuilder.Entity("Luce.Product", b =>
@@ -611,7 +592,7 @@ namespace Luce.Migrations
             modelBuilder.Entity("Luce.Review", b =>
                 {
                     b.HasOne("Luce.Customer", "Customer")
-                        .WithMany("Reviews")
+                        .WithMany()
                         .HasForeignKey("CustomerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -657,20 +638,9 @@ namespace Luce.Migrations
                     b.Navigation("Seller");
                 });
 
-            modelBuilder.Entity("Luce.Admin", b =>
-                {
-                    b.Navigation("Payments");
-                });
-
             modelBuilder.Entity("Luce.Customer", b =>
                 {
                     b.Navigation("CartItems");
-
-                    b.Navigation("Orders");
-
-                    b.Navigation("Payments");
-
-                    b.Navigation("Reviews");
                 });
 
             modelBuilder.Entity("Luce.Dispatch", b =>
@@ -678,11 +648,9 @@ namespace Luce.Migrations
                     b.Navigation("SellerDispatches");
                 });
 
-            modelBuilder.Entity("Luce.Order", b =>
+            modelBuilder.Entity("Luce.Payment", b =>
                 {
-                    b.Navigation("CartItem");
-
-                    b.Navigation("Payment");
+                    b.Navigation("Order");
                 });
 
             modelBuilder.Entity("Luce.Product", b =>

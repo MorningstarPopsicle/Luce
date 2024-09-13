@@ -19,12 +19,14 @@ namespace Luce.Controllers
 
         private readonly IProductService _productService;
         private readonly ICartItemService _cartItemService;
+        private readonly IOrderService _orderService;
 
-        public CustomerController(ICustomerService customerService, IProductService productService, ICartItemService cartItemService)
+        public CustomerController(ICustomerService customerService, IProductService productService, ICartItemService cartItemService, IOrderService orderService)
         {
             _customerService = customerService;
             _productService = productService;
             _cartItemService = cartItemService;
+            _orderService = orderService;
 
         }
 
@@ -169,7 +171,6 @@ namespace Luce.Controllers
                     OrderId = model.CartItem.OrderId,
                     Quantity = model.CartItem.Quantity,
                     IsCheckedOut = model.CartItem.IsCheckedOut,
-                    // TotalPrice = model.CartItem.TotalPrice,
                     ProductDto = new ProductDto()
                     {
                         Id = model.Product.Id,
@@ -192,36 +193,98 @@ namespace Luce.Controllers
 
         public async Task<IActionResult> ViewCart()
         {
-                string claim = User.FindFirstValue(ClaimTypes.NameIdentifier);
-                 int id = int.Parse(claim);
-                var customer = await _customerService.GetById(id);
-                var cartItems = await _cartItemService.GetCartItemsByCustomerIdAsync(customer.Id);
-                var model = new ViewCartViewModel()
-                {
-                    CartItems = cartItems
-                };
-                if (cartItems != null)
-                {
-                    return View(model);
-                }
-                return StatusCode(406, "Cart is Empty");  
+            string claim = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            int id = int.Parse(claim);
+            var customer = await _customerService.GetById(id);
+            var cartItems = await _cartItemService.GetCartItemsByCustomerIdAsync(customer.Id);
+            var model = new ViewCartViewModel()
+            {
+                CartItems = cartItems
+            };
+            if (cartItems != null)
+            {
+                return View(model);
+            }
+            return StatusCode(406, "Cart is Empty");
         }
 
 
         public async Task<IActionResult> Delete(int cartItemId)
         {
             var result = await _cartItemService.DeleteCartItemByIdAsync(cartItemId);
-                if (result == true)
-                {
+            if (result == true)
+            {
 
-                    return RedirectToAction("ViewCart");
-                }
+                return RedirectToAction("ViewCart");
+            }
 
             return RedirectToAction("ViewCart");
         }
 
-        
+
+        // public async Task<IActionResult> CreateOrder(int cartItemId, OrderCartItemViewModel model)
+        // {
+
+        //     var cartItem = await _cartItemService.GetCartItemByCartItemIdAsync(cartItemId);
+        //     model = new OrderCartItemViewModel
+        //     {
+        //         CartItem = cartItem,
+        //     };
+
+        //     if (HttpContext.Request.Method == "POST")
+        //     {
+        //         var oldModel = new OrderDto
+        //         {
+        //             Id = model.Order.Id,
+        //             Distance = model.Order.Distance,
+        //             Date = model.Order.Date,
+        //             DeliveryAddress = model.Order.DeliveryAddress,
+        //             RateValue = model.Order.RateValue,
+        //             RefNo = model.Order.RefNo,
+        //             TotalPrice = model.Order.TotalPrice,
+        //             DeliveryIsVerifiedByCustomer = model.Order.DeliveryIsVerifiedByCustomer,
+        //             DeliveryIsVerifiedBySeller = model.Order.DeliveryIsVerifiedBySeller
+        //         };
+        //         var order = await _orderService.CreateOrder(oldModel, cartItemId);
+        //         if (order != null)
+        //         {
+        //             return View();
+        //         }
+        //         return StatusCode(406, "Customer not Registered");
+        //     }
+        //     return View(model);
+        // }
 
 
+        public async Task<IActionResult> test(int cartItemId, TestViewModel model)
+        {
+
+            var cartItem = await _cartItemService.GetCartItemByCartItemIdAsync(cartItemId);
+            var OrderDto = new OrderDto()
+            {
+                
+                Id = model.Id,
+                DeliveryAddress = model.DeliveryAddress,
+                Distance = model.Distance,
+                Date = model.Date,
+                RateValue = model.RateValue,
+                RefNo = model.RefNo,
+                TotalPrice = model.TotalPrice,
+                
+                DeliveryIsVerifiedByCustomer = model.DeliveryIsVerifiedByCustomer,
+                DeliveryIsVerifiedBySeller = model.DeliveryIsVerifiedBySeller
+            };
+
+            if (HttpContext.Request.Method == "POST")
+            {
+                var order = await _orderService.CreateOrder(OrderDto, cartItemId);
+                if (order != null)
+                {
+                    return View();
+                }
+                return StatusCode(406, "Customer not Registered");
+            }
+            return View(model);
+        }
     }
 }

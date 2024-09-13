@@ -1,0 +1,81 @@
+@using Luce.ViewModels.CustomerViewModel
+@model Luce.ViewModels.CustomerViewModel.OrderCartItemViewModel
+
+@{
+    ViewData["Title"] = "Create Order Page";
+}
+
+
+<div>
+    <h3>Check Out:</h3>
+    <form method="post" action="/Customer/CreateOrder"> 
+    
+        <input type="hidden" name="cartItemId" value="@Model.CartItem.Id">
+        
+        @if (Model.CartItem != null)
+        {
+            var quantity = Model.CartItem.Quantity;
+            var price =  Model.CartItem.ProductDto.Price;
+            var totalPrice = price * quantity;
+            
+            <div>
+                <label>
+                    PRODUCT NAME: @Model.CartItem.ProductDto.ProductName 
+                </label>
+            </div>
+            
+               
+            
+            <div>
+                <label>
+                    TOTAL PRICE: @totalPrice
+                </label>
+            </div>   
+        }
+        else
+        {
+            <p>Product information not available.</p>
+        }
+          
+            <div>
+            <label asp-for="Order.DeliveryAddress.HouseNumber"></label>
+            <input asp-for="Order.DeliveryAddress.HouseNumber" placeholder="House Number" />
+        </div>
+        <div>
+            <label asp-for="Order.DeliveryAddress.StreetName"></label>
+            <input asp-for="Order.DeliveryAddress.StreetName" placeholder="Street Name" />
+        </div>
+        <div>
+            <label asp-for="Order.DeliveryAddress.LGA"></label>
+            <input asp-for="Order.DeliveryAddress.LGA" placeholder="LGA" />
+        </div>
+        <div>
+            <label asp-for="Order.DeliveryAddress.Town"></label>
+            <input asp-for="Order.DeliveryAddress.Town" placeholder="Town" />
+        </div>
+        <div>
+            <label asp-for="Order.DeliveryAddress.State"></label>
+            <input asp-for="Order.DeliveryAddress.State" placeholder="State" />
+        </div>
+        <div>
+            <label asp-for="Order.DeliveryAddress.Country"></label>
+            <input asp-for="Order.DeliveryAddress.Country" placeholder="Country" />
+        </div>
+        <div>
+            <label asp-for="Order.Distance"></label>
+            <input asp-for="Order.Distance" type="number" placeholder="Distance" />
+        </div>
+        <div>
+            <label asp-for="Order.RateValue"></label>
+            <input asp-for="Order.RateValue" type="number" placeholder="Rate Value" />
+        </div>
+        <input type="submit" value="Place Order" />
+      
+        </form>
+</div>
+
+
+       
+ 
+   
+    
