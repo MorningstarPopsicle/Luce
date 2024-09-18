@@ -256,35 +256,78 @@ namespace Luce.Controllers
         // }
 
 
-        public async Task<IActionResult> test(int cartItemId, TestViewModel model)
+        public async Task<IActionResult> test(TestViewModel model)
         {
-
-            var cartItem = await _cartItemService.GetCartItemByCartItemIdAsync(cartItemId);
-            var OrderDto = new OrderDto()
+            string claim = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            int id = int.Parse(claim);
+            var items = await _cartItemService.GetCartItemsByCustomerIdAsync(id);
+            model = new TestViewModel
             {
-                
-                Id = model.Id,
-                DeliveryAddress = model.DeliveryAddress,
-                Distance = model.Distance,
-                Date = model.Date,
-                RateValue = model.RateValue,
-                RefNo = model.RefNo,
-                TotalPrice = model.TotalPrice,
-                
-                DeliveryIsVerifiedByCustomer = model.DeliveryIsVerifiedByCustomer,
-                DeliveryIsVerifiedBySeller = model.DeliveryIsVerifiedBySeller
+                CartItems = items,
             };
+
+            var totalPricePerSeller = GetTotalPricesBySeller(model);
+            model.TotalPrice = totalPricePerSeller.Values.Sum();
+             model = new TestViewModel
+            {
+                Payment = new PaymentDto
+                {
+                    Amount = model.TotalPrice
+                }
+            };
+            
+
 
             if (HttpContext.Request.Method == "POST")
             {
-                var order = await _orderService.CreateOrder(OrderDto, cartItemId);
+                var OrderDto = new OrderDto()
+                {
+                    PaymentDto = model.Payment,
+                    Id = model.Id,
+                    DeliveryAddress = model.DeliveryAddress,
+                    RateValue = model.RateValue,
+                    RefNo = model.RefNo,
+                    Date = model.Date,
+                    Distance = model.Distance,
+                    DeliveryIsVerifiedByCustomer = model.DeliveryIsVerifiedByCustomer,
+                    DeliveryIsVerifiedBySeller = model.DeliveryIsVerifiedBySeller,
+                    Items = model.CartItems.Select(x => new CartItemDto
+                    {
+                        ProductDto = new ProductDto()
+                        {
+                            SellerId = x.ProductDto.SellerId,
+                            Price = x.ProductDto.Price,
+                            ProductName = x.ProductDto.ProductName
+                        },
+                        Quantity = x.Quantity
+                    }).ToList()
+                };
+                var order = await _orderService.CreateOrder(OrderDto);
                 if (order != null)
                 {
-                    return View();
+                    return View("Index");
                 }
-                return StatusCode(406, "Customer not Registered");
+                return StatusCode(406, "Order not Successful");
             }
             return View(model);
+        }
+        public Dictionary<int, double> GetTotalPricesBySeller(TestViewModel order)
+        {
+
+            var newOrder = new Order()
+            {
+                Items = order.CartItems.Select(x => new CartItem
+                {
+                    Product = new Product
+                    {
+                        SellerId = x.ProductDto.SellerDto.Id,
+                        ProductName = x.ProductDto.ProductName,
+                        Price = x.ProductDto.Price
+                    },
+                    Quantity = x.Quantity
+                }).ToList()
+            };
+            return newOrder.TotalPricePerSeller();
         }
     }
 }

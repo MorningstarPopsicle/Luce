@@ -1,6 +1,7 @@
 using Luce.DTOs;
 using Luce.Interface.Repositories;
 using Luce.Interface.Services;
+using Luce.ViewModels.CustomerViewModel;
 
 namespace Luce.Implementation.Service
 {
@@ -19,19 +20,19 @@ namespace Luce.Implementation.Service
 
         }
 
-        public async Task<OrderDto> CreateOrder(OrderDto model, int cartItemId)
+        public async Task<OrderDto> CreateOrder(OrderDto model)
         {
-            var cartItem = await _cartItemRepository.GetAsync(cartItemId);
             var order = await _orderRepository.GetAsync(model.Id);
-            if(order != null)
+            if (order != null)
             {
                 return null;
             }
+            
 
             var payment = new Payment()
             {
                 Date = DateTime.Now,
-                Amount = model.TotalPrice, 
+                Amount = model.PaymentDto.Amount,
                 Status = PaymentStatus.Completed,
             };
             var addPayment = await _paymentRepository.CreateAsync(payment);
@@ -49,14 +50,28 @@ namespace Luce.Implementation.Service
                 DeliveryIsVerifiedByCustomer = false,
                 DeliveryIsVerifiedBySeller = false,
                 RefNo = $"ORD{Guid.NewGuid().ToString().Replace("-", " ").Substring(0, 5).ToUpper()}",
-                TotalPrice =  model.TotalPrice,
                 Date = DateTime.Now,
                 RateValue = model.RateValue,
                 Distance = model.Distance,
-                CartItem = model.ItemDto,
-                CustomerId = cartItem.CustomerId,
-                SellerId = cartItem.Product.Seller.Id,
-                PaymentId = model.PaymentId
+                Payment = new Payment
+                {
+                    Id = model.PaymentDto.Id,
+                    Amount = model.PaymentDto.Amount
+                },
+                Customer = new Customer
+                {
+                    Id = model.CustomerDto.Id
+                },
+                Items = model.Items.Select(item => new CartItem
+                {
+                    Product = new Product
+                    {
+                        SellerId = item.ProductDto.SellerId,
+                        Price = item.ProductDto.Price,
+                        ProductName = item.ProductDto.ProductName
+                    },
+                    Quantity = item.Quantity
+                }).ToList(),
 
             };
 
@@ -67,12 +82,16 @@ namespace Luce.Implementation.Service
             }
             else
             {
-                cartItem.IsCheckedOut = true;
-                cartItem.OrderId = result.Id;
-                await _cartItemRepository.UpdateAsync(cartItem);
-                var product = await _productRepository.GetAsync(cartItem.ProductId);
-                product.Quantity -= cartItem.Quantity;
-                await _productRepository.UpdateAsync(product);
+                foreach (var item in result.Items)
+                {
+
+                    item.IsCheckedOut = true;
+                    item.OrderId = result.Id;
+                    await _cartItemRepository.UpdateAsync(item);
+                    var product = await _productRepository.GetAsync(item.ProductId);
+                    product.Quantity -= item.Quantity;
+                    await _productRepository.UpdateAsync(product);
+                }
 
                 return new OrderDto()
                 {
@@ -80,7 +99,6 @@ namespace Luce.Implementation.Service
                     DeliveryIsVerifiedByCustomer = result.DeliveryIsVerifiedByCustomer,
                     DeliveryIsVerifiedBySeller = result.DeliveryIsVerifiedBySeller,
                     RefNo = result.RefNo,
-                    TotalPrice = result.TotalPrice,
                     Date = result.Date,
                     RateValue = result.RateValue,
                     Distance = result.Distance,
@@ -112,6 +130,16 @@ namespace Luce.Implementation.Service
                             PhoneNumber = result.Customer.User.PhoneNumber,
                         }
                     },
+                    Items = result.Items.Select(x => new CartItemDto
+                    {
+                        ProductDto = new ProductDto
+                        {
+                            SellerId = x.Product.Seller.Id,
+                            Price = x.Product.Price,
+                            ProductName = x.Product.ProductName
+                        },
+                        Quantity = x.Quantity
+                    }).ToList()
                 };
             }
 
@@ -145,7 +173,6 @@ namespace Luce.Implementation.Service
                 DeliveryIsVerifiedBySeller = order.DeliveryIsVerifiedBySeller,
                 RefNo = order.RefNo,
                 Date = order.Date,
-                TotalPrice = order.TotalPrice,
                 DeliveryAddress = new AddressDto
                 {
                     HouseNumber = order.DeliveryAddress.HouseNumber,
@@ -163,9 +190,19 @@ namespace Luce.Implementation.Service
                     Amount = order.Payment.Amount
                 },
                 Id = order.Id,
-
+                Items = order.Items.Select(x => new CartItemDto
+                {
+                    ProductDto = new ProductDto
+                    {
+                        SellerId = x.Product.Seller.Id,
+                        Price = x.Product.Price,
+                        ProductName = x.Product.ProductName
+                    },
+                    Quantity = x.Quantity
+                }).ToList()
             };
         }
+
         public async Task<List<OrderDto>> GetByCustomerId(int id)
         {
             var orders = await _orderRepository.GetOrders(id);
@@ -189,14 +226,13 @@ namespace Luce.Implementation.Service
                         Role = order.Customer.User.Role,
                     },
                 },
-                
+
                 Distance = order.Distance,
                 RateValue = order.RateValue,
                 DeliveryIsVerifiedByCustomer = order.DeliveryIsVerifiedByCustomer,
                 DeliveryIsVerifiedBySeller = order.DeliveryIsVerifiedBySeller,
                 RefNo = order.RefNo,
                 Date = order.Date,
-                TotalPrice = order.TotalPrice,
                 DeliveryAddress = new AddressDto
                 {
                     HouseNumber = order.DeliveryAddress.HouseNumber,
@@ -206,6 +242,7 @@ namespace Luce.Implementation.Service
                     State = order.DeliveryAddress.State,
                     Country = order.DeliveryAddress.Country
                 },
+
                 PaymentDto = new PaymentDto
                 {
                     Id = order.Payment.Id,
@@ -214,8 +251,39 @@ namespace Luce.Implementation.Service
                     Date = order.Payment.Date
                 },
                 Id = order.Id,
+                Items = order.Items.Select(x => new CartItemDto
+                {
+                    ProductDto = new ProductDto
+                    {
+                        SellerId = x.Product.Seller.Id,
+                        Price = x.Product.Price,
+                        ProductName = x.Product.ProductName
+                    },
+                    Quantity = x.Quantity
+                }).ToList()
+
             }).ToList();
         }
+
+        // public  Dictionary<int, double> GetTotalPricesBySeller(OrderDto order)
+        // {
+            
+        //     var newOrder = new Order()
+        //     {
+        //         Items = order.Items.Select(x => new CartItem
+        //         {
+        //             Product = new Product
+        //             {
+        //                 SellerId = x.ProductDto.SellerDto.Id,
+        //                 ProductName = x.ProductDto.ProductName,
+        //                 Price = x.ProductDto.Price
+        //             },
+        //             Quantity = x.Quantity
+        //         }).ToList()
+        //     };
+        //     return newOrder.TotalPricePerSeller();
+        // }
+        
 
 
     }

@@ -3,6 +3,7 @@ using System;
 using Luce;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Luce.Migrations
 {
     [DbContext(typeof(LuceDbContext))]
-    partial class LuceDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240913092742_newmig")]
+    partial class newmig
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -226,6 +228,9 @@ namespace Luce.Migrations
 
                     b.Property<int>("SellerId")
                         .HasColumnType("int");
+
+                    b.Property<double>("TotalPrice")
+                        .HasColumnType("double");
 
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime(6)");
@@ -491,7 +496,7 @@ namespace Luce.Migrations
                         .IsRequired();
 
                     b.HasOne("Luce.Order", "Order")
-                        .WithMany("Items")
+                        .WithMany("CartItems")
                         .HasForeignKey("OrderId");
 
                     b.HasOne("Luce.Product", "Product")
@@ -641,7 +646,7 @@ namespace Luce.Migrations
 
             modelBuilder.Entity("Luce.Order", b =>
                 {
-                    b.Navigation("Items");
+                    b.Navigation("CartItems");
                 });
 
             modelBuilder.Entity("Luce.Payment", b =>

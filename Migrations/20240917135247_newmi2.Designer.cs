@@ -3,6 +3,7 @@ using System;
 using Luce;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Luce.Migrations
 {
     [DbContext(typeof(LuceDbContext))]
-    partial class LuceDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240917135247_newmi2")]
+    partial class newmi2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

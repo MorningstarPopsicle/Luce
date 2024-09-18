@@ -7,9 +7,8 @@ namespace Luce
         public int CustomerId {get; set;}
         public Customer Customer {get; set;}
         public int Quantity {get; set;}
-        // public int TotalPrice {get; set;}
         public int? OrderId {get; set;} 
-        // public Order Order {get; set;} 
+        public Order? Order {get; set;} 
         public bool IsCheckedOut {get; set;}  
     }
 }

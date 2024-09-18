@@ -13,12 +13,11 @@ namespace Luce.DTOs
         public bool DeliveryIsVerifiedByCustomer { get; set; }
         public bool DeliveryIsVerifiedBySeller { get; set; }
         public string RefNo { get; set; }
-        public double TotalPrice { get; set; }
-        // public List<CartItemDto> ItemDtos { get; set; }
-        public CartItem ItemDto { get; set; }
+        public List<CartItemDto> Items { get; set; }
         public AddressDto DeliveryAddress { get; set; }
-
         public CartItemOrderDto CartItemOrderDtos { get; set; }
+        // public Dictionary<int, double> TotalPricePerSeller { get; set; }
+        // public double TotalPrice { get; set; }
 
     }
 }
